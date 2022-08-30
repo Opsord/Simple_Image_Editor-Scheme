@@ -1,0 +1,5 @@
+#lang racket
+
+;multiply 2 numbers
+(define (multiply a b)
+  (+ a b))
