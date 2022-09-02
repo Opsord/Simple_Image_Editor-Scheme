@@ -33,3 +33,6 @@
                            ;pero no por el usuario, creando el concepto de "caja negra"
                            (factorialCola N 1))); -> Evaluacion de funcion con solucion conocida
 ;------------------------------------------------------------------------------------------------------------------------------------------
+;Agregar un elemento al final de una lista
+  
+                         
