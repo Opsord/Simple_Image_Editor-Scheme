@@ -9,9 +9,13 @@
   (list posX posY R G B profundidad))
 
 ;El ". args" hace que la lsita sea dinamica
-
+;Cosntructor diamico de imagen
 (define (imagen tipo largo ancho . args)
-  (list tipo largo ancho))
+  (list tipo largo ancho args))
+
+;Definicion de "iimagen-prueba" como una imagen de prueba
+(define (imagen-prueba tipo largo ancho . args)
+  (display args))
 
 ;Constructor
 
