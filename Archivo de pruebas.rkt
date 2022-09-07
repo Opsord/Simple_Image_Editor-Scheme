@@ -34,5 +34,19 @@
                            (factorialCola N 1))); -> Evaluacion de funcion con solucion conocida
 ;------------------------------------------------------------------------------------------------------------------------------------------
 ;Agregar un elemento al final de una lista
+(define (agregarFinal elemento lista)
+  (reverse (cons elemento (reverse lista))))
+;------------------------------------------------------------------------------------------------------------------------------------------
+;Calcular el largo de una lista - Recursion natural
+;(define (largoListaRN lista)
   
-                         
+
+;------------------------------------------------------------------------------------------------------------------------------------------
+;Calcular el largo de una lista - Recursion de cola
+(define (largoListaRC lista)
+  (define (funcionInterior lista acumulador)
+    (if (null? (cdr lista))
+    acumulador
+    (funcionInterior (cdr lista) (+ 1 acumulador))))
+  (funcionInterior lista 1))
+;------------------------------------------------------------------------------------------------------------------------------------------
