@@ -24,7 +24,7 @@
 ;------------------------------------------------------------------------------------------------------------------------------------------
 ;Factorial - Recurcion de cola - Encapsulada
 (define factorialCapsula (lambda (N); Se define una funcion que acapare toda la funcion que se encapsula a la cual
-                                    ;se le entrea solo 1 elemento
+                           ;se le entrea solo 1 elemento
                            (define factorialCola (lambda (N resultado)
                                                    (if (= N 0)
                                                        resultado
@@ -39,6 +39,8 @@
 ;------------------------------------------------------------------------------------------------------------------------------------------
 ;Calcular el largo de una lista - Recursion natural
 ;(define (largoListaRN lista)
+;  (if (null? (cdr lista)
+             
   
 
 ;------------------------------------------------------------------------------------------------------------------------------------------
@@ -46,7 +48,7 @@
 (define (largoListaRC lista)
   (define (funcionInterior lista acumulador)
     (if (null? (cdr lista))
-    acumulador
-    (funcionInterior (cdr lista) (+ 1 acumulador))))
+        acumulador
+        (funcionInterior (cdr lista) (+ 1 acumulador))))
   (funcionInterior lista 1))
 ;------------------------------------------------------------------------------------------------------------------------------------------

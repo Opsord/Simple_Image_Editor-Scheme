@@ -5,33 +5,25 @@
 
 
 ;-----------------------------------------------------------------------------------
-
-;Elementos que tiene un pixel (posX posY R G B profundidad)
+;Definicion de elementos que tendra el TDA
 ;Elementos que tiene que tener una imagen (tipo largo ancho [pixeles])
-
-
-
-;-----------------------------------------------------------------------------------
-
-;Definicion de un pixel de una imagen
-(define (pixel posX posY R G B profundidad)
-  (list posX posY R G B profundidad))
-
-;El ". args" hace que la lsita sea dinamica
-;Cosntructor diamico de imagen
-(define (imagen tipo largo ancho . args)
-  (list tipo largo ancho args))
-
-;-----------------------------------------------------------------------------------
-
-;Definicion de "imagen-prueba" como una imagen de prueba
-(define (imagen-prueba tipo largo ancho . args)
-  (display args))
-
 ;-----------------------------------------------------------------------------------
 
 ;Constructor
+(define (imagen largo ancho lst-pixeles)
+  (list largo ancho lst-pixeles))
 
+;Cosntructor diamico de imagen
+(define (imagDin largo ancho . args)
+  (list largo ancho args))
+;El ". args" hace que la lsita sea dinamica
+;El resto de argumentos sera la lista de pixeles de la imagen
+
+;-----------------------------------------------------------------------------------
+;Definicion de "imagen-prueba" como una imagen de prueba
+(define (imagen-prueba largo ancho . args)
+  (display args))
+;-----------------------------------------------------------------------------------
 ;Pertenencia
 
 ;Selector

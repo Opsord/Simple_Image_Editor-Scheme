@@ -1,0 +1,10 @@
+#lang racket
+
+;TDA pixel
+
+
+
+;-----------------------------------------------------------------------------------
+;Definicion de elementos que tendra el TDA
+;Elementos que tiene un pixel (posX posY R G B profundidad)
+;-----------------------------------------------------------------------------------
