@@ -37,13 +37,6 @@
 (define (agregarFinal elemento lista)
   (reverse (cons elemento (reverse lista))))
 ;------------------------------------------------------------------------------------------------------------------------------------------
-;Calcular el largo de una lista - Recursion natural
-;(define (largoListaRN lista)
-;  (if (null? (cdr lista)
-             
-  
-
-;------------------------------------------------------------------------------------------------------------------------------------------
 ;Calcular el largo de una lista - Recursion de cola
 (define (largoListaRC lista)
   (define (funcionInterior lista acumulador)

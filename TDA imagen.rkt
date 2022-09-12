@@ -2,6 +2,7 @@
 
 ;TDA imagen
 
+;Falta incluir el TDA pixel
 
 
 ;-----------------------------------------------------------------------------------
@@ -20,9 +21,15 @@
 ;El resto de argumentos sera la lista de pixeles de la imagen
 
 ;-----------------------------------------------------------------------------------
-;Definicion de "imagen-prueba" como una imagen de prueba
-(define (imagen-prueba largo ancho . args)
-  (display args))
+
+;Falta definir o lograr el tema del tipo de pixel
+
+;Definicion de "imagPrueba" como una imagen de prueba
+(define imagPrueba(imagDin 2 2
+                           (pixrgb-d 0 0 10 10 10 10)
+                           (pixrgb-d 0 1 20 20 20 20)
+                           (pixrgb-d 1 0 30 30 30 30)
+                           (pixrgb-d 1 1 40 40 40 40)))
 ;-----------------------------------------------------------------------------------
 ;Pertenencia
 
