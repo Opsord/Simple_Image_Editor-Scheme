@@ -15,10 +15,8 @@
   (list largo ancho lst-pixeles))
 
 ;Cosntructor diamico de imagen
-(define (imagDin largo ancho . args)
-  (list largo ancho args))
-;El ". args" hace que la lsita sea dinamica
-;El resto de argumentos sera la lista de pixeles de la imagen
+(define (imagDin largo ancho . pixeles) pixeles)
+;El ". pixele" hace que la lsita sea dinamica
 
 ;-----------------------------------------------------------------------------------
 
