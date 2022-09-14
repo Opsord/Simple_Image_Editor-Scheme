@@ -9,56 +9,56 @@
 ;Elementos que tiene un pixel (posX posY R G B profundidad)
 ;Se definen los 3 tipos de pixeles que hay
 ;-----------------------------------------------------------------------------------
-;Constructores
-
-;Constructor general de un pixel
-
-;Decidir si especializar u ocupar uno general
-;Verificar si "depth" forma parte de los argumentos
-(define (pixel tipo posX posY lst-args depth)
-  (list tipo posX posY lst-args depth))
-
-;-----------------------------------------------------------------------------------
-;Constructores individuales (desechado)
+;Constructores individuales
 
 ;Constructor del tipo Bit
-;(define (pixbit-d posX posY bool depth)
-;  (list posX posY bool depth))
+(define (pixbit-d posX posY bool depth)
+  (list "pixbit-d" posX posY bool depth))
 
 ;Constructor del tipo RGB
-;R G B tiene que ser entre 0 y 255 (implementar en pertenencia)
-;(define (pixrgb-d posX posY R G B depth)
-;  (list posX posY R G B depth))
+(define (pixrgb-d posX posY R G B depth)
+  (list "pixrgb-d" posX posY R G B depth))
 
 ;Constructor del tipo Hexadecimal
-;(define (pixhex-d posX posY HEX depth)
-;  (list posX posY HEX depth))
+(define (pixhex-d posX posY HEX depth)
+  (list "pixhex-d" posX posY HEX depth))
 
 ;-----------------------------------------------------------------------------------
+;Pixel de prueba
+
+(define pixbit-prueba(pixbit-d 1 1 0 10))
+;-----------------------------------------------------------------------------------
 ;Pertenencia
-;(pertnencia basica, falta completar)
+
 
 (define (pixbit? pixel)
-  (cond [(eq? "pixbit-d" (car pixel))#t]
-        ;Tiene posicion
-        ;Contenido del pixel es 0 o 1
-        ;depth es un numero
-        [else #f]))
+  (and
+    (and [eq? "pixbit-d" (car pixel)]
+         [and (integer? (cadr pixel)) (integer? (caddr pixel))]
+         )
+    (and [or (= (cadddr pixel) 0) (= (cadddr pixel) 1)]
+         [integer? (car(reverse pixel))]
+         )
+    ))
 
-(define (pixRGB? pixel)
+        ;[eq? "pixbit-d" (car pixel)]                              ;-> Verifica el tipo
+        ;[and (integer? (cadr pixel)) (integer? (caddr pixel))]    ;-> Tiene posicion
+        ;[or (= (cadddr pixel) 0) (= (cadddr pixel) 1)]            ;-> Contenido del pixel es 0 o 1
+
+(define (pixrgb? pixel)
   (cond [(eq? "pixrgb-d" (car pixel))#t]
-        ;Tiene posicion
-        ;R entre 0 y 255
-        ;G entre 0 y 255
-        ;B entre 0 y 255
-        ;depth es un numero
+        ;[and (integer? (cadr pixel)) (integer? (caddr pixel))]    ;-> Tiene posicion
+        ;[and (>= (cadddr pixel) 0) (<= (cadddr pixel) 255))]      ;-> R entre 0 y 255
+        ;[and (>= (caddddr pixel) 0) (<= (caddddr pixel) 255))]    ;-> G entre 0 y 255
+        ;[and (>= (cadddddr pixel) 0) (<= (cadddddr pixel) 255))]  ;-> B entre 0 y 255
+        ;[integer? (car(reverse(pixel)))]                          ;-> depth es un numero
         [else #f]))
 
-(define (pixHEX? pixel)
+(define (pixhex? pixel)
   (cond [(eq? "pixhex-d" (car pixel))#t]
-        ;Tiene posicion
+        ;[and (integer? (cadr pixel)) (integer? (caddr pixel))]    ;-> Tiene posicion
         ;Contenido en hexadecimal
-        ;depth es un  numero
+        ;[integer? (car(reverse(pixel)))]                          ;-> depth es un numero
         [else #f]))
 
 ;-----------------------------------------------------------------------------------
