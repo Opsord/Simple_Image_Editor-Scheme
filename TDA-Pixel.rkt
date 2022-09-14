@@ -1,13 +1,18 @@
 #lang racket
 
 ;TDA pixel
-
-
-
 ;-----------------------------------------------------------------------------------
-;Definicion de elementos que tendra el TDA
-;Elementos que tiene un pixel (posX posY R G B profundidad)
-;Se definen los 3 tipos de pixeles que hay
+;Exportacion de funciones
+
+;Constructores
+(provide pixbit-d)
+(provide pixrgb-d)
+(provide pixhex-d)
+;Validadores
+(provide pixbit?)
+(provide pixrgb?)
+(provide pixhex?)
+
 ;-----------------------------------------------------------------------------------
 ;Constructores individuales
 
@@ -24,16 +29,10 @@
   (list "pixhex-d" posX posY HEX depth))
 
 ;-----------------------------------------------------------------------------------
-;Pixeles de prueba
-
-(define pixbit-prueba(pixbit-d 1 1 0 10))
-(define pixrgb-prueba(pixrgb-d 1 1 0 100 255 10))
-(define pixhex-prueba(pixhex-d 1 0 "#FF00(codigo random)" 10))
-;-----------------------------------------------------------------------------------
 ;Pertenencia
 
 
-;Verificador de pertenencia al tipo pixBIT
+;Verificador de pertenencia al tipo pixBit
 (define (pixbit? pixel)
   (and
     (and [eq? "pixbit-d" (car pixel)]                             ;-> Verifica el tipo
@@ -74,11 +73,21 @@
    ))
 
 ;-----------------------------------------------------------------------------------
-;Selector
+;Pixeles de prueba
 
+(define pixbit-prueba(pixbit-d 1 1 0 10))
+(define pixrgb-prueba(pixrgb-d 1 1 0 100 255 10))
+(define pixhex-prueba(pixhex-d 1 0 "#FF00(codigo random)" 10))
+
+;Verificaciones de prueba
+;(pixbit? pixbit-prueba)
+;(pixrgb? pixrgb-prueba)
+;(pixhex? pixhex-prueba)
+
+;-----------------------------------------------------------------------------------
+;Selector
 ;-----------------------------------------------------------------------------------
 ;Modificador
-
 ;-----------------------------------------------------------------------------------
-
 ;Otras funciones
+;-----------------------------------------------------------------------------------

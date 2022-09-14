@@ -2,12 +2,9 @@
 
 ;TDA imagen
 
-;Falta incluir el TDA pixel
+;Importacion de TDA pixel
+(require "TDA-Pixel.rkt")
 
-
-;-----------------------------------------------------------------------------------
-;Definicion de elementos que tendra el TDA
-;Elementos que tiene que tener una imagen (tipo largo ancho [pixeles])
 ;-----------------------------------------------------------------------------------
 ;Constructor diamico de imagen
 
@@ -16,24 +13,23 @@
 ;; Tipo de recursión: NA
 ;; Dom: numero X numero X n-pieles
 ;; Rec: imagen
-(define (imagen largo ancho . pixeles) pixeles)
+(define (image largo ancho . pixeles) pixeles)
 ;El ". pixel" hace que la lsita sea dinamica
 
 ;-----------------------------------------------------------------------------------
 
-;Falta definir o lograr el tema del tipo de pixel
-
-;Definicion de "imagPrueba" como una imagen de prueba
-(define imagPrueba(imagen 2 2
+;Definicion de "imagen-prueba" como una imagen de prueba
+(define imagen-prueba(image 2 2
                            (pixrgb-d 0 0 10 10 10 10)
                            (pixrgb-d 0 1 20 20 20 20)
                            (pixrgb-d 1 0 30 30 30 30)
                            (pixrgb-d 1 1 40 40 40 40)))
 ;-----------------------------------------------------------------------------------
 ;Pertenencia
-
+;-----------------------------------------------------------------------------------
 ;Selector
-
+;-----------------------------------------------------------------------------------
 ;Modificador
-
+;-----------------------------------------------------------------------------------
 ;Otras funciones
+;-----------------------------------------------------------------------------------
