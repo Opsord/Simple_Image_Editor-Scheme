@@ -26,6 +26,31 @@
                            (pixrgb-d 1 1 40 40 40 40)))
 ;-----------------------------------------------------------------------------------
 ;Pertenencia
+
+;bitmap?
+(define (bitmap? image)
+  (define (bitmap-inner image acumulador)
+    (if (null? (cdr image))
+        acumulador
+        (bitmap-inner (cdr image) (and (pixbit? (car image)) acumulador))))
+  (bitmap-inner image #t))
+
+;pixmap?
+(define (pixmap? image)
+  (define (pixmap-inner image acumulador)
+    (if (null? (cdr image))
+        acumulador
+        (pixmap-inner (cdr image) (and (pixrgb? (car image)) acumulador))))
+  (pixmap-inner image #t))
+
+;hexmap?
+(define (hexmap? image)
+  (define (hexmap-inner image acumulador)
+    (if (null? (cdr image))
+        acumulador
+        (hexmap-inner (cdr image) (and (pixhex? (car image)) acumulador))))
+  (hexmap-inner image #t))
+
 ;-----------------------------------------------------------------------------------
 ;Selector
 ;-----------------------------------------------------------------------------------
