@@ -85,8 +85,7 @@
 ;Modificador
 
 ;flipH
-(define (flipH2 image)
-
+(define (flipH image)
   ;Constructor encapsulado de un pixBIT con el posY invertido
   (define(ConstrPixBIT image totalColumnas)
     (pixbit-d
@@ -125,6 +124,49 @@
   (cond [(bitmap? image) (flipH-inner image (list(ConstrPixBIT image (contarV image))) (contarV image))]
         [(pixmap? image) (flipH-inner image (list(ConstrPixRGB image (contarV image))) (contarV image))]
         [(hexmap? image) (flipH-inner image (list(ConstrPixHEX image (contarV image))) (contarV image))]))
+
+
+;flipV
+(define (flipV image)
+  ;Constructor encapsulado de un pixBIT con el posY invertido
+  (define(ConstrPixBIT image totalFilas)
+    (pixbit-d
+     [- (- totalFilas 1) (cadr(car image))]               ;-> posX
+     [caddr(car image)]                             ;-> posY
+     [car(cdddr(car image))]                        ;-> bool
+     [car(reverse(car image))]))                    ;-> depth
+  
+  ;Constructor encapsulado de un pixRGB con el posY invertido
+  (define(ConstrPixRGB image totalFilas)
+    (pixrgb-d
+     [- (- totalFilas 1) (cadr(car image))]               ;-> posX
+     [caddr(car image)]                             ;-> posY
+     [car(cdddr(car image))]                        ;-> R
+     [cadr(cdddr(car image))]                       ;-> G
+     [caddr(cdddr(car image))]                      ;-> B
+     [car(reverse(car image))]))                    ;-> depth
+
+  ;Constructor encapsulado de un pixHEX con el posY invertido
+  (define(ConstrPixHEX image totalFilas)
+    (pixhex-d
+     [- (- totalFilas 1) (cadr(car image))]               ;-> posX
+     [caddr(car image)]                             ;-> posY
+     [car(cdddr(car image))]                        ;-> hexadecimal
+     [car(reverse(car image))]))                    ;-> depth
+  
+  ;Funcion interna encapsulada
+  (define (flipV-inner image newImage auxFilas)
+    (if (null? (cdr image))
+        (reverse newImage)
+        (cond [(bitmap? image) (flipV-inner (cdr image) (cons (ConstrPixBIT (cdr image) auxFilas) newImage) auxFilas)]
+              [(pixmap? image) (flipV-inner (cdr image) (cons (ConstrPixRGB (cdr image) auxFilas) newImage) auxFilas)]
+              [(hexmap? image) (flipV-inner (cdr image) (cons (ConstrPixHEX (cdr image) auxFilas) newImage) auxFilas)] )))
+  
+  ;Llamado con solucion conocida
+  (cond [(bitmap? image) (flipV-inner image (list(ConstrPixBIT image (contarH image))) (contarH image))]
+        [(pixmap? image) (flipV-inner image (list(ConstrPixRGB image (contarH image))) (contarH image))]
+        [(hexmap? image) (flipV-inner image (list(ConstrPixHEX image (contarH image))) (contarH image))]))
+
 
 ;-----------------------------------------------------------------------------------
 ;Otras funciones
