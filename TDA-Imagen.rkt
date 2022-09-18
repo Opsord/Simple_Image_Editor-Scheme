@@ -29,7 +29,13 @@
                            (pixrgb-d 1 1 10 10 10 10)
                            (pixrgb-d 1 2 20 20 20 20)
                            (pixrgb-d 1 3 30 30 30 30)
-                           (pixrgb-d 1 4 40 40 40 40)))
+                           (pixrgb-d 1 4 40 40 40 40)
+                           (pixrgb-d 2 0 0 0 0 0)
+                           (pixrgb-d 2 1 10 10 10 10)
+                           (pixrgb-d 2 2 20 20 20 20)
+                           (pixrgb-d 2 3 30 30 30 30)
+                           (pixrgb-d 2 4 40 40 40 40)
+                           ))
 ;-----------------------------------------------------------------------------------
 ;Pertenencia
 
@@ -93,7 +99,6 @@
      [- (- totalColumnas 1) (caddr(car image))]     ;-> posY
      [car(cdddr(car image))]                        ;-> bool
      [car(reverse(car image))]))                    ;-> depth
-  
   ;Constructor encapsulado de un pixRGB con el posY invertido
   (define(ConstrPixRGB image totalColumnas)
     (pixrgb-d
@@ -103,15 +108,13 @@
      [cadr(cdddr(car image))]                       ;-> G
      [caddr(cdddr(car image))]                      ;-> B
      [car(reverse(car image))]))                    ;-> depth
-
   ;Constructor encapsulado de un pixHEX con el posY invertido
   (define(ConstrPixHEX image totalColumnas)
     (pixhex-d
      [cadr(car image)]                              ;-> posX
      [- (- totalColumnas 1) (caddr(car image))]     ;-> posY
      [car(cdddr(car image))]                        ;-> hexadecimal
-     [car(reverse(car image))]))                    ;-> depth
-  
+     [car(reverse(car image))]))                    ;-> depth  
   ;Funcion interna encapsulada
   (define (flipH-inner image newImage auxColumnas)
     (if (null? (cdr image))
@@ -119,11 +122,10 @@
         (cond [(bitmap? image) (flipH-inner (cdr image) (cons (ConstrPixBIT (cdr image) auxColumnas) newImage) auxColumnas)]
               [(pixmap? image) (flipH-inner (cdr image) (cons (ConstrPixRGB (cdr image) auxColumnas) newImage) auxColumnas)]
               [(hexmap? image) (flipH-inner (cdr image) (cons (ConstrPixHEX (cdr image) auxColumnas) newImage) auxColumnas)] )))
-  
   ;Llamado con solucion conocida
   (cond [(bitmap? image) (flipH-inner image (list(ConstrPixBIT image (contarV image))) (contarV image))]
         [(pixmap? image) (flipH-inner image (list(ConstrPixRGB image (contarV image))) (contarV image))]
-        [(hexmap? image) (flipH-inner image (list(ConstrPixHEX image (contarV image))) (contarV image))]))
+        [(hexmap? image) (flipH-inner image (list(ConstrPixHEX image (contarV image))) (contarV image))] ))
 
 
 ;flipV
@@ -131,29 +133,26 @@
   ;Constructor encapsulado de un pixBIT con el posY invertido
   (define(ConstrPixBIT image totalFilas)
     (pixbit-d
-     [- (- totalFilas 1) (cadr(car image))]               ;-> posX
+     [- (- totalFilas 1) (cadr(car image))]         ;-> posX
      [caddr(car image)]                             ;-> posY
      [car(cdddr(car image))]                        ;-> bool
      [car(reverse(car image))]))                    ;-> depth
-  
   ;Constructor encapsulado de un pixRGB con el posY invertido
   (define(ConstrPixRGB image totalFilas)
     (pixrgb-d
-     [- (- totalFilas 1) (cadr(car image))]               ;-> posX
+     [- (- totalFilas 1) (cadr(car image))]         ;-> posX
      [caddr(car image)]                             ;-> posY
      [car(cdddr(car image))]                        ;-> R
      [cadr(cdddr(car image))]                       ;-> G
      [caddr(cdddr(car image))]                      ;-> B
      [car(reverse(car image))]))                    ;-> depth
-
   ;Constructor encapsulado de un pixHEX con el posY invertido
   (define(ConstrPixHEX image totalFilas)
     (pixhex-d
-     [- (- totalFilas 1) (cadr(car image))]               ;-> posX
+     [- (- totalFilas 1) (cadr(car image))]         ;-> posX
      [caddr(car image)]                             ;-> posY
      [car(cdddr(car image))]                        ;-> hexadecimal
-     [car(reverse(car image))]))                    ;-> depth
-  
+     [car(reverse(car image))]))                    ;-> depth 
   ;Funcion interna encapsulada
   (define (flipV-inner image newImage auxFilas)
     (if (null? (cdr image))
@@ -161,12 +160,34 @@
         (cond [(bitmap? image) (flipV-inner (cdr image) (cons (ConstrPixBIT (cdr image) auxFilas) newImage) auxFilas)]
               [(pixmap? image) (flipV-inner (cdr image) (cons (ConstrPixRGB (cdr image) auxFilas) newImage) auxFilas)]
               [(hexmap? image) (flipV-inner (cdr image) (cons (ConstrPixHEX (cdr image) auxFilas) newImage) auxFilas)] )))
-  
   ;Llamado con solucion conocida
   (cond [(bitmap? image) (flipV-inner image (list(ConstrPixBIT image (contarH image))) (contarH image))]
         [(pixmap? image) (flipV-inner image (list(ConstrPixRGB image (contarH image))) (contarH image))]
-        [(hexmap? image) (flipV-inner image (list(ConstrPixHEX image (contarH image))) (contarH image))]))
+        [(hexmap? image) (flipV-inner image (list(ConstrPixHEX image (contarH image))) (contarH image))] ))
 
+
+
+
+  
+
+
+
+;Recortar un cuadrante
+(define (crop image x1 y1 x2 y2)
+  ;Funcion interna encapsulada
+  (define (crop-inner image minX maxX minY maxY newImage)
+    (if (null? (cdr image))
+        (reverse newImage)
+        (if (and (and (<= minX (cadr(car image))) (>= maxX (cadr(car image))))
+                 (and (<= minY (caddr(car image))) (>= maxY (caddr(car image)))))
+            (crop-inner (cdr image) minX maxX minY maxY (cons (car image) newImage))
+            [crop-inner (cdr image) minX maxX minY maxY newImage])))
+  ;Llamado con solucion conocida
+  (cond
+    [(and (> x1 x2) (> y1 y2)) (crop-inner image x2 x1 y2 y1 null)]
+    [(and (> x1 x2) (< y1 y2)) (crop-inner image x2 x1 y1 y2 null)]
+    [(and (< x1 x2) (> y1 y2)) (crop-inner image x1 x2 y2 y1 null)]
+    [(and (< x1 x2) (< y1 y2)) (crop-inner image x1 x2 y1 y2 null)]))
 
 ;-----------------------------------------------------------------------------------
 ;Otras funciones
