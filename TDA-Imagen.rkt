@@ -5,7 +5,7 @@
 ;Importacion de TDA pixel
 (require "TDA-Pixel.rkt")
 
-;-----------------------------------------------------------------------------------
+;----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ;Constructor diamico de imagen
 
 ;; Descripción: Constructor dinamico de una imagen
@@ -16,11 +16,11 @@
 (define (image largo ancho . pixeles) pixeles)
 ;El ". pixel" hace que la lsita sea dinamica
 
-;-----------------------------------------------------------------------------------
+;----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ;Definicion de "imagen-prueba" como una imagen de prueba
 (define imagen-prueba(image 2 2
-                           (pixrgb-d 0 0 0 0 0 0)
+                           (pixrgb-d 0 0 250 251 252 0)
                            (pixrgb-d 0 1 10 10 10 10)
                            (pixrgb-d 0 2 20 20 20 20)
                            (pixrgb-d 0 3 30 30 30 30)
@@ -36,7 +36,7 @@
                            (pixrgb-d 2 3 30 30 30 30)
                            (pixrgb-d 2 4 40 40 40 40)
                            ))
-;-----------------------------------------------------------------------------------
+;----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ;Pertenencia
 
 ;bitmap?
@@ -63,7 +63,7 @@
         (hexmap-inner (cdr image) (and (pixhex? (car image)) acumulador))))
   (hexmap-inner image #t))
 
-;-----------------------------------------------------------------------------------
+;----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ;Selector
 
 ;contar-filas
@@ -87,7 +87,7 @@
                 (cont-inner (cdr image) (caddr (car image)))
                 (cont-inner (cdr image) acumulador)))))
   (cont-inner image 0))
-;-----------------------------------------------------------------------------------
+;----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ;Modificador
 
 ;flipH
@@ -166,12 +166,6 @@
         [(hexmap? image) (flipV-inner image (list(ConstrPixHEX image (contarH image))) (contarH image))] ))
 
 
-
-
-  
-
-
-
 ;Recortar un cuadrante
 (define (crop image x1 y1 x2 y2)
   ;Funcion interna encapsulada
@@ -189,6 +183,32 @@
     [(and (< x1 x2) (> y1 y2)) (crop-inner image x1 x2 y2 y1 null)]
     [(and (< x1 x2) (< y1 y2)) (crop-inner image x1 x2 y1 y2 null)]))
 
-;-----------------------------------------------------------------------------------
+
+;RGB a HEX
+(define (imgRGB->imgHex image)
+  ;Parte entera
+  (define(valor-int numero)
+    (quotient numero 16))
+  ;Parte decimal
+  (define(valor-dec numero)
+    (* (- (/ numero 16) (valor-int numero)) 16))
+  ;Generador de hexadecimal
+  (define(genHex numero)
+    (string (string-ref "0123456789ABCDEF" (valor-int numero)) (string-ref "0123456789ABCDEF" (valor-dec numero))))
+  ;Conversor de pixel invididual
+  (define (pixRGB->pixHEX pixel)
+    (pixhex-d (cadr pixel)
+              (caddr pixel)
+              (string-append (genHex (car(cdddr pixel))) (genHex (cadr(cdddr pixel))) (genHex (caddr(cdddr pixel))))
+              (car (reverse pixel))))  
+  ;Constructor de la funcion
+  (map pixRGB->pixHEX image))
+
+
+
+
+
+  
+;----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ;Otras funciones
-;-----------------------------------------------------------------------------------
+;----------------------------------------------------------------------------------------------------------------------------------------------------------------------
