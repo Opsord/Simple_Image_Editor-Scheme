@@ -1,11 +1,14 @@
 #lang racket
 
 ;TDA pixel
+;-----------------------------------------------------------------------------------
+;Exportacion de funciones
 
+;Constructores
 (provide pixbit-d)
 (provide pixrgb-d)
 (provide pixhex-d)
-
+;Validadores
 (provide pixbit?)
 (provide pixrgb?)
 (provide pixhex?)
@@ -77,15 +80,19 @@
 (define pixhex-prueba(pixhex-d 1 0 "#FF00(codigo random)" 10))
 
 ;Verificaciones de prueba
-(pixbit? pixbit-prueba)
-(pixrgb? pixrgb-prueba)
-(pixhex? pixhex-prueba)
+;(pixbit? pixbit-prueba)
+;(pixrgb? pixrgb-prueba)
+;(pixhex? pixhex-prueba)
+
 ;-----------------------------------------------------------------------------------
 ;Selector
 
+;Obtener contenido de un pixel
+(define(get-cont pixel)
+  (cdddr pixel))
+
 ;-----------------------------------------------------------------------------------
 ;Modificador
-
 ;-----------------------------------------------------------------------------------
-
 ;Otras funciones
+;-----------------------------------------------------------------------------------

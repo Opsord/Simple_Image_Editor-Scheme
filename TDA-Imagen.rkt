@@ -19,7 +19,7 @@
 ;----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ;Definicion de "imagen-prueba" como una imagen de prueba
-(define imagen-prueba(image 2 2
+(define imagen-prueba(image 3 5
                            (pixrgb-d 0 0 250 251 252 0)
                            (pixrgb-d 0 1 10 10 10 10)
                            (pixrgb-d 0 2 20 20 20 20)
@@ -33,8 +33,16 @@
                            (pixrgb-d 2 0 0 0 0 0)
                            (pixrgb-d 2 1 10 10 10 10)
                            (pixrgb-d 2 2 20 20 20 20)
-                           (pixrgb-d 2 3 30 30 30 30)
-                           (pixrgb-d 2 4 40 40 40 40)
+                           (pixrgb-d 2 3 90 90 90 90)
+                           (pixrgb-d 2 4 80 80 80 80)
+                           ))
+
+(define imagen2(image 1 5
+                           (pixrgb-d 0 0 250 251 252 0)
+                           (pixrgb-d 0 1 10 10 10 10)
+                           (pixrgb-d 0 2 20 20 20 20)
+                           (pixrgb-d 0 3 30 30 30 30)
+                           (pixrgb-d 0 4 40 40 40 40)
                            ))
 ;----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ;Pertenencia
@@ -153,7 +161,7 @@
      [caddr(car image)]                             ;-> posY
      [car(cdddr(car image))]                        ;-> hexadecimal
      [car(reverse(car image))]))                    ;-> depth 
-  ;Funcion interna encapsulada
+  ;F+uncion interna encapsulada
   (define (flipV-inner image newImage auxFilas)
     (if (null? (cdr image))
         (reverse newImage)
@@ -167,15 +175,20 @@
 
 
 ;Recortar un cuadrante
-(define (crop image x1 y1 x2 y2)
+(define(crop image x1 y1 x2 y2)
   ;Funcion interna encapsulada
-  (define (crop-inner image minX maxX minY maxY newImage)
+  (define(crop-inner image minX maxX minY maxY newImage)
     (if (null? (cdr image))
-        (reverse newImage)
-        (if (and (and (<= minX (cadr(car image))) (>= maxX (cadr(car image))))
-                 (and (<= minY (caddr(car image))) (>= maxY (caddr(car image)))))
-            (crop-inner (cdr image) minX maxX minY maxY (cons (car image) newImage))
-            [crop-inner (cdr image) minX maxX minY maxY newImage])))
+        (if (null? (car image))
+            (reverse newImage)
+            (if (and (and (<= minX (cadr(car image))) (>= maxX (cadr(car image))))
+                     (and (<= minY (caddr(car image))) (>= maxY (caddr(car image)))))
+                (cons (car image) newImage)
+                newImage))
+            (if (and (and (<= minX (cadr(car image))) (>= maxX (cadr(car image))))
+                     (and (<= minY (caddr(car image))) (>= maxY (caddr(car image)))))
+                (crop-inner (cdr image) minX maxX minY maxY (cons (car image) newImage))
+                [crop-inner (cdr image) minX maxX minY maxY newImage])))
   ;Llamado con solucion conocida
   (cond
     [(and (> x1 x2) (> y1 y2)) (crop-inner image x2 x1 y2 y1 null)]
@@ -184,8 +197,8 @@
     [(and (< x1 x2) (< y1 y2)) (crop-inner image x1 x2 y1 y2 null)]))
 
 
-;RGB a HEX
-(define (imgRGB->imgHex image)
+;Conversor de imagen RGB a HEX
+(define(imgRGB->imgHex image)
   ;Parte entera
   (define(valor-int numero)
     (quotient numero 16))
@@ -204,7 +217,45 @@
   ;Constructor de la funcion
   (map pixRGB->pixHEX image))
 
+;Histograma
+(define (histogram image)
+  ;Sintatizador de pixeles de una imagen
+  (define(unificador-pix image lista-pix)
+    (if (null? (cdr image))
+        (if (null? (car image))
+            lista-pix
+            (if (member (get-cont(car image)) lista-pix)
+                lista-pix
+                (cons (get-cont(car image)) lista-pix)))
+        (if (member (get-cont(car image)) lista-pix)
+            (unificador-pix (cdr image) lista-pix)
+            (unificador-pix (cdr image) (cons (get-cont(car image)) lista-pix)))))
+  ;Contador de ocurrencias de 1 pixel en una imagen
+  (define(contador-pixel image cont-pixel contador)
+    (if (null? (cdr image))
+        (if (null? (car image))
+            (cons cont-pixel contador)
+            (if (equal? (cdddr(car image)) cont-pixel)
+                (cons cont-pixel (+ 1 contador))
+                (cons cont-pixel contador)))
+        (if (equal? (cdddr(car image)) cont-pixel)
+            (contador-pixel (cdr image) cont-pixel (+ 1 contador))
+            (contador-pixel (cdr image) cont-pixel contador))))
+  ;Funcion interna del histograma
+  (define (hist-inner image pix-unificados histograma)
+    (if (null? (cdr pix-unificados))
+        (if (null? (car pix-unificados))
+            histograma
+            (cons (contador-pixel image (car pix-unificados) 0) histograma))
+        (hist-inner image (cdr pix-unificados) (cons (contador-pixel image (car pix-unificados) 0) histograma))))
+  ;Llamado a funcion con solucion conocidas
+  (hist-inner imagen-prueba (unificador-pix imagen-prueba null) null))
 
+  
+
+        
+    
+    
 
 
 
