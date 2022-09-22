@@ -235,10 +235,10 @@
     (if (null? (cdr image))
         (if (null? (car image))
             (cons cont-pixel contador)
-            (if (equal? (cdddr(car image)) cont-pixel)
+            (if (equal? (get-cont(car image)) cont-pixel)
                 (cons cont-pixel (+ 1 contador))
                 (cons cont-pixel contador)))
-        (if (equal? (cdddr(car image)) cont-pixel)
+        (if (equal? (get-cont(car image)) cont-pixel)
             (contador-pixel (cdr image) cont-pixel (+ 1 contador))
             (contador-pixel (cdr image) cont-pixel contador))))
   ;Funcion interna del histograma
@@ -250,6 +250,8 @@
         (hist-inner image (cdr pix-unificados) (cons (contador-pixel image (car pix-unificados) 0) histograma))))
   ;Llamado a funcion con solucion conocidas
   (hist-inner imagen-prueba (unificador-pix imagen-prueba null) null))
+
+
 
   
 

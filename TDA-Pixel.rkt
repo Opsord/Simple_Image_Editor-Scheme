@@ -91,7 +91,7 @@
 
 ;Obtener contenido de un pixel
 (define(get-cont pixel)
-  (cdddr pixel))
+  (reverse(cdr(reverse(cdddr pixel)))))
 
 ;-----------------------------------------------------------------------------------
 ;Modificador
