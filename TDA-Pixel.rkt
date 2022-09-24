@@ -36,14 +36,15 @@
 
 ;Verificador de pertenencia al tipo pixBit
 (define (pixbit? pixel)
-  (and
-    (and [eq? "pixbit-d" (car pixel)]                             ;-> Verifica el tipo
-         [and (integer? (cadr pixel)) (integer? (caddr pixel))]   ;-> Verifica posicion
-         )
-    (and [or (= (cadddr pixel) 0) (= (cadddr pixel) 1)]           ;-> Contenido del pixel es 0 o 1
-         [integer? (car(reverse pixel))]                          ;-> Verifica la profundidad
-         )
-    ))
+  (and (and
+        (and [eq? "pixbit-d" (car pixel)]                             ;-> Verifica el tipo
+             [and (integer? (cadr pixel)) (integer? (caddr pixel))]   ;-> Verifica posicion
+             )
+        (and [or (= (cadddr pixel) 0) (= (cadddr pixel) 1)]           ;-> Contenido del pixel es 0 o 1
+             [integer? (car(reverse pixel))]                          ;-> Verifica la profundidad
+             ))
+       (= (length pixel) 5))
+  )
 
 
 ;Verificador de pertenencia al tipo pixRGB
@@ -82,7 +83,7 @@
 (define pixhex-prueba(pixhex-d 1 0 "#FF00(codigo random)" 10))
 
 ;Verificaciones de prueba
-;(pixbit? pixbit-prueba)
+;(pixbit? pixrgb-prueba)
 ;(pixrgb? pixrgb-prueba)
 ;(pixhex? pixhex-prueba)
 

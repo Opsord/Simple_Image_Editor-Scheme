@@ -21,7 +21,7 @@
 ;Definicion de "imagen-prueba" como una imagen de prueba
 (define imagen-prueba(image 3 5
                            (pixrgb-d 0 0 250 251 252 0)
-                           (pixrgb-d 0 1 10 10 10 10)
+                           (pixrgb-d 0 1 255 160 12 10)
                            (pixrgb-d 0 2 20 20 20 20)
                            (pixrgb-d 0 3 30 30 30 30)
                            (pixrgb-d 0 4 40 40 40 40)
@@ -34,7 +34,7 @@
                            (pixrgb-d 2 1 10 10 10 10)
                            (pixrgb-d 2 2 20 20 20 20)
                            (pixrgb-d 2 3 90 90 90 90)
-                           (pixrgb-d 2 4 80 80 80 80)
+                           (pixrgb-d 2 4 80 80 80 30)
                            ))
 
 (define imagen2(image 1 5
@@ -49,30 +49,27 @@
 
 ;bitmap?
 (define (bitmap? image)
-  (define (bitmap-inner image acumulador)
-    (if (null? (cdr image))
-        acumulador
-        (bitmap-inner (cdr image) (and (pixbit? (car image)) acumulador))))
-  (bitmap-inner image #t))
+  (andmap pixbit? image))
 
 ;pixmap?
 (define (pixmap? image)
-  (define (pixmap-inner image acumulador)
-    (if (null? (cdr image))
-        acumulador
-        (pixmap-inner (cdr image) (and (pixrgb? (car image)) acumulador))))
-  (pixmap-inner image #t))
+  (andmap pixrgb? image))
 
 ;hexmap?
 (define (hexmap? image)
-  (define (hexmap-inner image acumulador)
-    (if (null? (cdr image))
-        acumulador
-        (hexmap-inner (cdr image) (and (pixhex? (car image)) acumulador))))
-  (hexmap-inner image #t))
+  (andmap pixhex? image))
 
 ;----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ;Selector
+
+;Obtiene las dimensiones asumiendo que la imagen
+;no esta comprimida y los pixeles estan ordenados
+(define(get-dimensions image)
+  (define (largo image)
+    (cadr(car(reverse image))))
+  (define (ancho image)
+    (caddr(car(reverse image))))
+  (cons (largo image) (ancho image)))
 
 ;contar-filas
 (define (contarH image)
@@ -161,7 +158,7 @@
      [caddr(car image)]                             ;-> posY
      [car(cdddr(car image))]                        ;-> hexadecimal
      [car(reverse(car image))]))                    ;-> depth 
-  ;F+uncion interna encapsulada
+  ;Funcion interna encapsulada
   (define (flipV-inner image newImage auxFilas)
     (if (null? (cdr image))
         (reverse newImage)
@@ -249,15 +246,84 @@
             (cons (contador-pixel image (car pix-unificados) 0) histograma))
         (hist-inner image (cdr pix-unificados) (cons (contador-pixel image (car pix-unificados) 0) histograma))))
   ;Llamado a funcion con solucion conocidas
-  (hist-inner imagen-prueba (unificador-pix imagen-prueba null) null))
+  (hist-inner image (unificador-pix image null) null))
 
 
+;Separar los tda pixel
+(define (rotate90 image)
+  ;Constructor encapsulado de un pixBIT rotado cartesianamente
+  (define(const-bit pixel)
+    (pixbit-d
+     [caddr pixel]                                  ;-> posX
+     [*(cadr pixel) -1]                             ;-> posY
+     [cadr (reverse pixel)]                         ;-> bool
+     [car (reverse pixel)]))                        ;-> depth
+  ;Constructor encapsulado de un pixRGB rotado cartesianamente
+  (define(const-pix pixel)
+    (pixrgb-d
+     [caddr pixel]                                  ;-> posX
+     [*(cadr pixel) -1]                             ;-> posY
+     [cadddr pixel]                                 ;-> R
+     [caddr (reverse pixel)]                        ;-> G
+     [cadr (reverse pixel)]                         ;-> B
+     [car (reverse pixel)]))                        ;-> depth
+  ;Constructor encapsulado de un pixHEX rotado cartesianamente
+  (define(const-hex pixel)
+    (pixhex-d
+     [caddr pixel]                                  ;-> posX
+     [*(cadr pixel) -1]                             ;-> posY
+     [cadr (reverse pixel)]                         ;-> hexadecimal
+     [car (reverse pixel)]))                        ;-> depth 
+  ;Encontrar el menor valor despues de convertir
+  (define (menor-valor image contador)
+    (if (null? (cdr image))
+        (if (null? (car image))
+            contador
+            (if (< (caddr(car image)) contador)
+                (caddr(car image))
+                contador))
+        (menor-valor (cdr image) (if (< (caddr(car image)) contador)
+                                     (caddr(car image)) contador))))
+  ;Constructor 2 pixbit para imagen rotada
+  (define(const2-bit pixel traslador)
+    (pixbit-d
+     [caddr pixel]                                  ;-> posX
+     [+ (cadr pixel) traslador]                     ;-> posY
+     [cadr (reverse pixel)]                         ;-> bool
+     [car (reverse pixel)]))                        ;-> depth
+  ;Constructor 2 pixrgb para imagen rotada
+  (define(const2-pix pixel traslador)
+    (pixrgb-d
+     [cadr pixel]                                   ;-> posX
+     [+ (caddr pixel) traslador]                    ;-> posY
+     [cadddr pixel]                                 ;-> R
+     [caddr (reverse pixel)]                        ;-> G
+     [cadr (reverse pixel)]                         ;-> B
+     [car (reverse pixel)]))                        ;-> depth
+  ;Constructor 2 pixhex para imagen rotada
+  (define(const2-hex pixel traslador)
+    (pixhex-d
+     [caddr pixel]                                  ;-> posX
+     [+ (cadr pixel) traslador]                     ;-> posY
+     [cadr (reverse pixel)]                         ;-> hexadecimal
+     [car (reverse pixel)]))                        ;-> depth
 
-  
+  ;Funcion interna 
+  (define (rotate90-inner image traslador newImage)
+    (if (null? (cdr image))
+        (if (null? (car image))
+            newImage
+            (cond
+              [(bitmap? image) (cons (const2-bit (car image) traslador) newImage)]
+              [(pixmap? image) (cons (const2-pix (car image) traslador) newImage)]
+              [(hexmap? image) (cons (const2-hex (car image) traslador) newImage)]))
+        (rotate90-inner (cdr image) traslador (cond
+                                                [(bitmap? image) (cons (const2-bit (car image) traslador) newImage)]
+                                                [(pixmap? image) (cons (const2-pix (car image) traslador) newImage)]
+                                                [(hexmap? image) (cons (const2-hex (car image) traslador) newImage)]))))
 
-        
-    
-    
+  ;Llamada con solucion conocida
+  (rotate90-inner (map const-pix image) (* (menor-valor (map const-pix image) 0) -1) null))
 
 
 
