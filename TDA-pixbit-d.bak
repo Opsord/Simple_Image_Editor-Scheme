@@ -1,20 +1,9 @@
 #lang racket
 
-;TDA pixel
+;TDA pixbit-d
 ;-----------------------------------------------------------------------------------
 ;Exportacion de funciones
-
-;Constructores
-(provide pixbit-d)
-(provide pixrgb-d)
-(provide pixhex-d)
-;Validadores
-(provide pixbit?)
-(provide pixrgb?)
-(provide pixhex?)
-;Selectores
-(provide get-cont)
-
+(provide (all-defined-out))
 ;-----------------------------------------------------------------------------------
 ;Constructores individuales
 

@@ -2,8 +2,12 @@
 
 ;TDA imagen
 
-;Importacion de TDA pixel
-(require "TDA-Pixel.rkt")
+;Importacion de los TDA pixel
+(require "TDA-pixbit-d.rkt")
+(require "TDA-pixrgb-d.rkt")
+(require "TDA-pixhex-d.rkt")
+;Eportacion para rchivo main.rkt
+(provide(all-defined-out))
 
 ;----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ;Constructor diamico de imagen
@@ -16,34 +20,6 @@
 (define (image largo ancho . pixeles) pixeles)
 ;El ". pixel" hace que la lsita sea dinamica
 
-;----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-;Definicion de "imagen-prueba" como una imagen de prueba
-(define imagen-prueba(image 3 5
-                           (pixrgb-d 0 0 250 251 252 0)
-                           (pixrgb-d 0 1 255 160 12 10)
-                           (pixrgb-d 0 2 20 20 20 20)
-                           (pixrgb-d 0 3 30 30 30 30)
-                           (pixrgb-d 0 4 40 40 40 40)
-                           (pixrgb-d 1 0 0 0 0 0)
-                           (pixrgb-d 1 1 10 10 10 10)
-                           (pixrgb-d 1 2 20 20 20 20)
-                           (pixrgb-d 1 3 30 30 30 30)
-                           (pixrgb-d 1 4 40 40 40 40)
-                           (pixrgb-d 2 0 0 0 0 0)
-                           (pixrgb-d 2 1 10 10 10 10)
-                           (pixrgb-d 2 2 20 20 20 20)
-                           (pixrgb-d 2 3 90 90 90 90)
-                           (pixrgb-d 2 4 80 80 80 30)
-                           ))
-
-(define imagen2(image 1 5
-                           (pixrgb-d 0 0 250 251 252 0)
-                           (pixrgb-d 0 1 10 10 10 10)
-                           (pixrgb-d 0 2 20 20 20 20)
-                           (pixrgb-d 0 3 30 30 30 30)
-                           (pixrgb-d 0 4 40 40 40 40)
-                           ))
 ;----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ;Pertenencia
 
@@ -61,6 +37,10 @@
 
 ;----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ;Selector
+
+;Obtener contenido de un pixel
+(define(get-cont pixel)
+  (reverse(cdr(reverse(cdddr pixel)))))
 
 ;Obtiene las dimensiones asumiendo que la imagen
 ;no esta comprimida y los pixeles estan ordenados
@@ -249,7 +229,7 @@
   (hist-inner image (unificador-pix image null) null))
 
 
-;Separar los tda pixel
+;Rotar una imagen en 90 grados de forma cartesiana
 (define (rotate90 image)
   ;Constructor encapsulado de un pixBIT rotado cartesianamente
   (define(const-bit pixel)
@@ -307,7 +287,6 @@
      [+ (cadr pixel) traslador]                     ;-> posY
      [cadr (reverse pixel)]                         ;-> hexadecimal
      [car (reverse pixel)]))                        ;-> depth
-
   ;Funcion interna 
   (define (rotate90-inner image traslador newImage)
     (if (null? (cdr image))
@@ -321,10 +300,21 @@
                                                 [(bitmap? image) (cons (const2-bit (car image) traslador) newImage)]
                                                 [(pixmap? image) (cons (const2-pix (car image) traslador) newImage)]
                                                 [(hexmap? image) (cons (const2-hex (car image) traslador) newImage)]))))
-
   ;Llamada con solucion conocida
   (rotate90-inner (map const-pix image) (* (menor-valor (map const-pix image) 0) -1) null))
 
+;Comprimir
+(define(get-max histograma max)
+  (if (null? (cdr histograma))
+      (if (> (cdr(car histograma)) (cdr max))
+          histograma
+          max)
+      (get-max (cdr histograma) (if (> (cdr (car histograma)) (cdr max))
+                                    (car histograma)
+                                    max))))
+
+;(get-max (histogram image) (cons 0 0))
+;(define(compress
 
 
   
