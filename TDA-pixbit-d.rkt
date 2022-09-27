@@ -10,7 +10,12 @@
   (list "pixbit-d" posX posY bool depth))
 ;-----------------------------------------------------------------------------------
 ;Pertenencia
-;Verificador de pertenencia al tipo pixBit
+
+;; Descripción: Constructor de pixel tipo BIT
+;; Tipo de algoritmo/estrategia: Constructor dinamico de una lista para n-elementos
+;; Tipo de recursión: NA
+;; Dom: numero X numero X numero X numero
+;; Rec: pixelBIT
 (define (pixbit? pixel)
   (and (and
         (and [eq? "pixbit-d" (car pixel)]                             ;-> Verifica el tipo

@@ -2,8 +2,12 @@
 
 ;TDA imagen
 
-;Importacion de TDA pixel
-(require "TDA-Pixel.rkt")
+;Importacion de los TDA pixel
+(require "TDA-pixbit-d.rkt")
+(require "TDA-pixrgb-d.rkt")
+(require "TDA-pixhex-d.rkt")
+;Eportacion para rchivo main.rkt
+(provide(all-defined-out))
 
 ;----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ;Constructor diamico de imagen
@@ -17,54 +21,35 @@
 ;El ". pixel" hace que la lsita sea dinamica
 
 ;----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-;Definicion de "imagen-prueba" como una imagen de prueba
-(define imagen-prueba(image 2 2
-                           (pixrgb-d 0 0 250 251 252 0)
-                           (pixrgb-d 0 1 10 10 10 10)
-                           (pixrgb-d 0 2 20 20 20 20)
-                           (pixrgb-d 0 3 30 30 30 30)
-                           (pixrgb-d 0 4 40 40 40 40)
-                           (pixrgb-d 1 0 0 0 0 0)
-                           (pixrgb-d 1 1 10 10 10 10)
-                           (pixrgb-d 1 2 20 20 20 20)
-                           (pixrgb-d 1 3 30 30 30 30)
-                           (pixrgb-d 1 4 40 40 40 40)
-                           (pixrgb-d 2 0 0 0 0 0)
-                           (pixrgb-d 2 1 10 10 10 10)
-                           (pixrgb-d 2 2 20 20 20 20)
-                           (pixrgb-d 2 3 30 30 30 30)
-                           (pixrgb-d 2 4 40 40 40 40)
-                           ))
-;----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ;Pertenencia
 
 ;bitmap?
 (define (bitmap? image)
-  (define (bitmap-inner image acumulador)
-    (if (null? (cdr image))
-        acumulador
-        (bitmap-inner (cdr image) (and (pixbit? (car image)) acumulador))))
-  (bitmap-inner image #t))
+  (andmap pixbit? image))
 
 ;pixmap?
 (define (pixmap? image)
-  (define (pixmap-inner image acumulador)
-    (if (null? (cdr image))
-        acumulador
-        (pixmap-inner (cdr image) (and (pixrgb? (car image)) acumulador))))
-  (pixmap-inner image #t))
+  (andmap pixrgb? image))
 
 ;hexmap?
 (define (hexmap? image)
-  (define (hexmap-inner image acumulador)
-    (if (null? (cdr image))
-        acumulador
-        (hexmap-inner (cdr image) (and (pixhex? (car image)) acumulador))))
-  (hexmap-inner image #t))
+  (andmap pixhex? image))
 
 ;----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ;Selector
+
+;Obtener contenido de un pixel
+(define(get-cont pixel)
+  (reverse(cdr(reverse(cdddr pixel)))))
+
+;Obtiene las dimensiones asumiendo que la imagen
+;no esta comprimida y los pixeles estan ordenados
+(define(get-dimensions image)
+  (define (largo image)
+    (cadr(car(reverse image))))
+  (define (ancho image)
+    (caddr(car(reverse image))))
+  (cons (largo image) (ancho image)))
 
 ;contar-filas
 (define (contarH image)
@@ -167,15 +152,20 @@
 
 
 ;Recortar un cuadrante
-(define (crop image x1 y1 x2 y2)
+(define(crop image x1 y1 x2 y2)
   ;Funcion interna encapsulada
-  (define (crop-inner image minX maxX minY maxY newImage)
+  (define(crop-inner image minX maxX minY maxY newImage)
     (if (null? (cdr image))
-        (reverse newImage)
-        (if (and (and (<= minX (cadr(car image))) (>= maxX (cadr(car image))))
-                 (and (<= minY (caddr(car image))) (>= maxY (caddr(car image)))))
-            (crop-inner (cdr image) minX maxX minY maxY (cons (car image) newImage))
-            [crop-inner (cdr image) minX maxX minY maxY newImage])))
+        (if (null? (car image))
+            (reverse newImage)
+            (if (and (and (<= minX (cadr(car image))) (>= maxX (cadr(car image))))
+                     (and (<= minY (caddr(car image))) (>= maxY (caddr(car image)))))
+                (cons (car image) newImage)
+                newImage))
+            (if (and (and (<= minX (cadr(car image))) (>= maxX (cadr(car image))))
+                     (and (<= minY (caddr(car image))) (>= maxY (caddr(car image)))))
+                (crop-inner (cdr image) minX maxX minY maxY (cons (car image) newImage))
+                [crop-inner (cdr image) minX maxX minY maxY newImage])))
   ;Llamado con solucion conocida
   (cond
     [(and (> x1 x2) (> y1 y2)) (crop-inner image x2 x1 y2 y1 null)]
@@ -185,7 +175,7 @@
 
 
 ;Conversor de imagen RGB a HEX
-(define (imgRGB->imgHex image)
+(define(imgRGB->imgHex image)
   ;Parte entera
   (define(valor-int numero)
     (quotient numero 16))
@@ -204,8 +194,127 @@
   ;Constructor de la funcion
   (map pixRGB->pixHEX image))
 
+;Histograma
+(define (histogram image)
+  ;Sintatizador de pixeles de una imagen
+  (define(unificador-pix image lista-pix)
+    (if (null? (cdr image))
+        (if (null? (car image))
+            lista-pix
+            (if (member (get-cont(car image)) lista-pix)
+                lista-pix
+                (cons (get-cont(car image)) lista-pix)))
+        (if (member (get-cont(car image)) lista-pix)
+            (unificador-pix (cdr image) lista-pix)
+            (unificador-pix (cdr image) (cons (get-cont(car image)) lista-pix)))))
+  ;Contador de ocurrencias de 1 pixel en una imagen
+  (define(contador-pixel image cont-pixel contador)
+    (if (null? (cdr image))
+        (if (null? (car image))
+            (cons cont-pixel contador)
+            (if (equal? (get-cont(car image)) cont-pixel)
+                (cons cont-pixel (+ 1 contador))
+                (cons cont-pixel contador)))
+        (if (equal? (get-cont(car image)) cont-pixel)
+            (contador-pixel (cdr image) cont-pixel (+ 1 contador))
+            (contador-pixel (cdr image) cont-pixel contador))))
+  ;Funcion interna del histograma
+  (define (hist-inner image pix-unificados histograma)
+    (if (null? (cdr pix-unificados))
+        (if (null? (car pix-unificados))
+            histograma
+            (cons (contador-pixel image (car pix-unificados) 0) histograma))
+        (hist-inner image (cdr pix-unificados) (cons (contador-pixel image (car pix-unificados) 0) histograma))))
+  ;Llamado a funcion con solucion conocidas
+  (hist-inner image (unificador-pix image null) null))
 
 
+;Rotar una imagen en 90 grados de forma cartesiana
+(define (rotate90 image)
+  ;Constructor encapsulado de un pixBIT rotado cartesianamente
+  (define(const-bit pixel)
+    (pixbit-d
+     [caddr pixel]                                  ;-> posX
+     [*(cadr pixel) -1]                             ;-> posY
+     [cadr (reverse pixel)]                         ;-> bool
+     [car (reverse pixel)]))                        ;-> depth
+  ;Constructor encapsulado de un pixRGB rotado cartesianamente
+  (define(const-pix pixel)
+    (pixrgb-d
+     [caddr pixel]                                  ;-> posX
+     [*(cadr pixel) -1]                             ;-> posY
+     [cadddr pixel]                                 ;-> R
+     [caddr (reverse pixel)]                        ;-> G
+     [cadr (reverse pixel)]                         ;-> B
+     [car (reverse pixel)]))                        ;-> depth
+  ;Constructor encapsulado de un pixHEX rotado cartesianamente
+  (define(const-hex pixel)
+    (pixhex-d
+     [caddr pixel]                                  ;-> posX
+     [*(cadr pixel) -1]                             ;-> posY
+     [cadr (reverse pixel)]                         ;-> hexadecimal
+     [car (reverse pixel)]))                        ;-> depth 
+  ;Encontrar el menor valor despues de convertir
+  (define (menor-valor image contador)
+    (if (null? (cdr image))
+        (if (null? (car image))
+            contador
+            (if (< (caddr(car image)) contador)
+                (caddr(car image))
+                contador))
+        (menor-valor (cdr image) (if (< (caddr(car image)) contador)
+                                     (caddr(car image)) contador))))
+  ;Constructor 2 pixbit para imagen rotada
+  (define(const2-bit pixel traslador)
+    (pixbit-d
+     [caddr pixel]                                  ;-> posX
+     [+ (cadr pixel) traslador]                     ;-> posY
+     [cadr (reverse pixel)]                         ;-> bool
+     [car (reverse pixel)]))                        ;-> depth
+  ;Constructor 2 pixrgb para imagen rotada
+  (define(const2-pix pixel traslador)
+    (pixrgb-d
+     [cadr pixel]                                   ;-> posX
+     [+ (caddr pixel) traslador]                    ;-> posY
+     [cadddr pixel]                                 ;-> R
+     [caddr (reverse pixel)]                        ;-> G
+     [cadr (reverse pixel)]                         ;-> B
+     [car (reverse pixel)]))                        ;-> depth
+  ;Constructor 2 pixhex para imagen rotada
+  (define(const2-hex pixel traslador)
+    (pixhex-d
+     [caddr pixel]                                  ;-> posX
+     [+ (cadr pixel) traslador]                     ;-> posY
+     [cadr (reverse pixel)]                         ;-> hexadecimal
+     [car (reverse pixel)]))                        ;-> depth
+  ;Funcion interna 
+  (define (rotate90-inner image traslador newImage)
+    (if (null? (cdr image))
+        (if (null? (car image))
+            newImage
+            (cond
+              [(bitmap? image) (cons (const2-bit (car image) traslador) newImage)]
+              [(pixmap? image) (cons (const2-pix (car image) traslador) newImage)]
+              [(hexmap? image) (cons (const2-hex (car image) traslador) newImage)]))
+        (rotate90-inner (cdr image) traslador (cond
+                                                [(bitmap? image) (cons (const2-bit (car image) traslador) newImage)]
+                                                [(pixmap? image) (cons (const2-pix (car image) traslador) newImage)]
+                                                [(hexmap? image) (cons (const2-hex (car image) traslador) newImage)]))))
+  ;Llamada con solucion conocida
+  (rotate90-inner (map const-pix image) (* (menor-valor (map const-pix image) 0) -1) null))
+
+;Comprimir
+(define(get-max histograma max)
+  (if (null? (cdr histograma))
+      (if (> (cdr(car histograma)) (cdr max))
+          histograma
+          max)
+      (get-max (cdr histograma) (if (> (cdr (car histograma)) (cdr max))
+                                    (car histograma)
+                                    max))))
+
+;(get-max (histogram image) (cons 0 0))
+;(define(compress
 
 
   

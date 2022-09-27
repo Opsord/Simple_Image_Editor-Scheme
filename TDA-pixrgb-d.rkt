@@ -9,7 +9,13 @@
 (define (pixrgb-d posX posY R G B depth)
   (list "pixrgb-d" posX posY R G B depth))
 ;-----------------------------------------------------------------------------------
-;Verificador de pertenencia al tipo pixRGB
+;Pertenencia
+
+;; Descripción: Constructor de pixel tipo RGB
+;; Tipo de algoritmo/estrategia: Constructor dinamico de una lista para n-elementos
+;; Tipo de recursión: NA
+;; Dom: numero X numero X numero X nummero X numero X numero
+;; Rec: pixelRGB
 (define (pixrgb? pixel)
   (and (and 
         (and [eq? "pixrgb-d" (car pixel)]                                             ;-> Verifica el tipo
