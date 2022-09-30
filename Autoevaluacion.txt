@@ -1,0 +1,39 @@
+Autoevaluacion Lab 1
+Andres Zelaya
+
+Autoevaluación de requerimientos funcionales.
+
+TDAs	                     			1
+TDA image - constructor					1
+TDA image - bitmap?						1
+TDA image - pixmap?						1
+TDA image - hexmap?						1
+TDA image - compressed?					1
+TDA image - flipH						1
+TDA image - flipV						1
+TDA image - crop						1
+TDA image - imgRGB->imgHex				1
+TDA image - histogram					1
+TDA image - rotate90					1
+TDA image - compress					1
+TDA image - edit						0
+TDA image - invertColorBit				0
+TDA image - invertColorRGB				0
+TDA image - adjustChannel				0
+TDA image - image->string				0
+TDA image - depthLayers					0
+TDA image - decompress					0
+
+Autoevaluacion de requerimientos no funcionales.
+
+Autoevaluación  									1
+Lenguaje 											1
+Versión												1
+Standard											1
+No variables										1
+Documentación										0.75
+Dom->Rec											1
+Organización										1
+Historial											1
+Script de pruebas (pruebas_RUT_Apellidos.rkt)		1
+Prerrequisitos										1
