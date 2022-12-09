@@ -3,9 +3,9 @@
 ;TDA imagen
 
 ;Importacion de los TDA pixel
-(require "TDA-pixbit-d.rkt")
-(require "TDA-pixrgb-d.rkt")
-(require "TDA-pixhex-d.rkt")
+(require "ADT-PixBIT.rkt")
+(require "ADT-PixRGB.rkt")
+(require "ADT-PixHEX.rkt")
 ;Eportacion para rchivo main.rkt
 (provide(all-defined-out))
 

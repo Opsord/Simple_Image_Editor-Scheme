@@ -3,11 +3,11 @@
 ;Archivo donde se aplican todos los ejemplos y sript de pruebas
 
 ;Importacion de los TDA pixel
-(require "TDA-pixbit-d.rkt")
-(require "TDA-pixrgb-d.rkt")
-(require "TDA-pixhex-d.rkt")
+(require "ADT-PixBIT.rkt")
+(require "ADT-PixRGB.rkt")
+(require "ADT-PixHEX.rkt")
 ;Importacion de TDA imagen
-(require "TDA-Imagen.rkt")
+(require "ADT-Image.rkt")
 
 ;Creación de una imagen de 2 x 2 del tipo pixmap
 (define img1 (image 2 2
