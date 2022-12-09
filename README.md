@@ -15,6 +15,34 @@ In addition to those files, there is a file called "testing-script" with some ex
 Also, is it possible to find a "random-examples" file with different functions that stick to the functional paradigm.
 
 
+## Features
+
+Program functions:
+
+- [x]  ADTs (program separated by ADTs)
+- [x]  ADT-Image | Constructor
+- [x]  ADT-Image | bitmap?
+- [x]  ADT-Image | pixmap?
+- [x]  ADT-Image | hexmap?
+- [x]  ADT-Image | compressed?
+- [x]  ADT-Image | flipH
+- [x]  ADT-Image | flipV
+- [x]  ADT-Image | crop
+- [x]  ADT-Image | imgRGB -> imgHEX
+- [x]  ADT-Image | histogram
+- [x]  ADT-Image | rotate90
+- [x]  ADT-Image | compress
+- [ ]  ADT-Image | edit
+- [ ]  ADT-Image | invertColorBit
+- [ ]  ADT-Image | invertColorRGB
+- [ ]  ADT-Image | adjustChannel
+- [ ]  ADT-Image | image -> string
+- [ ]  ADT-Image | depthLayers
+- [ ]  ADT-Image | decompress
+
+(13/20) Implemented
+
+
 ## Author
 
 - [@Opsord](https://www.github.com/Opsord)
@@ -41,10 +69,9 @@ Clone the project
 
 -> Do Suff!
 
-
 ## Extras
 
-Check the other versions of S.I.E. in different formats!
+Check the other versions of S.I.E. in different paradigms!
 
-- [@Prolog Version](https://github.com/Opsord/Lab-02-Prolog)
-- [@Java Version](https://github.com/Opsord/Lab-03-Java)
+- [@Prolog Version](https://github.com/Opsord/Lab-02-Prolog) | (16/18) Implemented features.
+- [@Java Version](https://github.com/Opsord/Lab-03-Java) | (20/20) Implemented features.
