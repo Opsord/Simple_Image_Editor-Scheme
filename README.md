@@ -40,3 +40,11 @@ Clone the project
 -> Click the run button on the top right corner
 
 -> Do Suff!
+
+
+## Extras
+
+Check the other versions of S.I.E. in different formats!
+
+- [@Prolog Version](https://github.com/Opsord/Lab-02-Prolog)
+- [@Java Version](https://github.com/Opsord/Lab-03-Java)
