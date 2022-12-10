@@ -54,7 +54,7 @@ Following these steps, anyone will be able to use/run this program
 
 Windows installation:
 
--> Install [@DrRacket](https://racket-lang.org)
+-> Install [DrRacket](https://racket-lang.org)
 
 
 ## Run Locally
@@ -73,5 +73,5 @@ Clone the project
 
 Check the other versions of S.I.E. in different paradigms!
 
-- [@Prolog Version](https://github.com/Opsord/Lab-02-Prolog) | (16/18) Implemented features.
-- [@Java Version](https://github.com/Opsord/Lab-03-Java) | (20/20) Implemented features.
+- [Prolog Version](https://github.com/Opsord/Lab-02-Prolog) | (16/18) Implemented features.
+- [Java Version](https://github.com/Opsord/Lab-03-Java) | (20/20) Implemented features.
