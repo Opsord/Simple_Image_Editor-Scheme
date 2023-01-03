@@ -74,4 +74,4 @@ Clone the project
 Check the other versions of S.I.E. in different paradigms!
 
 - [Prolog Version](https://github.com/Opsord/Lab-02-Prolog) | (16/18) Implemented features.
-- [Java Version](https://github.com/Opsord/Lab-03-Java) | (20/20) Implemented features.
+- [Java Version](https://github.com/Opsord/Simple_Image_Editor-Java) | (20/20) Implemented features.
